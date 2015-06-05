@@ -61,10 +61,6 @@ private:
 	 /* total income of station */
 	int net;
 	int netType[NUM_TYPE_OF_BIKE];
-	// int netElectric;
-	// int netLady;
-	// int netRoad;
-	// int netHybrid;
 	
 	BikeHeap bikeheaps[NUM_TYPE_OF_BIKE];
 	BikeHeap rentheap;

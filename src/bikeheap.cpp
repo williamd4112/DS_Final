@@ -36,6 +36,7 @@ void BikeHeap::insert(BikePtr ptr){
 void BikeHeap::deletes(BikePtr bikeptr){
     if(bikeptr == NULL)
         throw NullpointerException();
+        
     std::vector<BikePtr>::iterator it = std::find(heap.begin(), heap.end(), bikeptr);
     if(it == heap.end())
         throw LicenseNotFoundException(bikeptr->license);
