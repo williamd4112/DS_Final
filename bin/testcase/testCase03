@@ -1,0 +1,45 @@
+NewBike Lady NTHU0 59 Xinpu
+NewBike Lady NTHU1 3 Jingmei
+NewBike Lady NTHU2 0 Jingmei
+NewBike Lady NTHU3 1 Jingmei
+NewBike Lady NTHU4 15 Jingmei
+NewBike Lady NTHU5 20 Danshui
+NewBike Lady NTHU6 3 Danshui
+NewBike Hybrid AAAA0 13 Danshui
+NewBike Hybrid AAAA1 37 Liuzhangli
+NewBike Hybrid AAAA2 40 Liuzhangli
+NewBike Hybrid AAAA3 37 Liuzhangli
+NewBike Road BBBB0 5 Danshui
+NewBike Electric BBBB1 33 Danshui
+NewBike Electric CCCC0 33 Danshui
+NewBike Electric CCCC1 33 Ximen
+NewBike Electric AC000 33 Ximen
+StationReport Ximen
+HashReport
+JunkIt 00006
+JunkIt 00007
+JunkIt NTHU1
+JunkIt AAAA2
+StationReport Jingmei
+Rent Jingmei Lady
+StationReport Jingmei
+Rent Jingmei Lady
+StationReport Jingmei
+Rent Danshui Lady
+Returns Jingmei NTHU4 40
+Returns Ximen NTHU3 2
+StationReport Ximen
+Trans Ximen CCCC0
+StationReport Ximen
+Trans Ximen BBBB1
+StationReport Ximen
+Rent Ximen Electric
+StationReport Ximen
+Rent Ximen Electric
+StationReport Ximen
+Returns Muzha CCCC1 40
+StationReport Ximen
+NetSearch Jingmei
+NetSearch Ximen
+HashReport
+UbikeReport

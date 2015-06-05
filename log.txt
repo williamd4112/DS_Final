@@ -1,0 +1,1 @@
+g++ -o bin/main.out src/main.cpp src/bike.cpp -std=c++11

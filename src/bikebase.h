@@ -1,15 +1,27 @@
+/*
+	Class Bikebase:
+	Memory management class, this class manage all bike's instance
+	Outer class will access those bike by pointer which get from Bikebase's function
+	
+*/
+
 #ifndef _BIKEBASE_H_
 #define _BIKEBASE_H_
 
 #include "standard.h"
+#include "bike.h"
 #include <list>
 
-typedef struct HNodeRecord{
-	Licencse license;
-	BikePtr bikePtr;
-}HNodeRecord;
+#define PRINT_BIKES(b) for(std::list<Bike>::iterator it = (b).begin(); it != (b).end(); it++) \
+						        std::cout << std::setw(12) << it->getLicense() \
+						                  << std::setw(12) << it->getMile() \
+						                  << std::setw(12) << biketypeToStr(it->getBikeType()) \
+						                  << std::setw(12) << stationtypeToStr(it->getStationType()) << std::endl; \
 
-typedef std::list<HNodeRecord> HNode; 
+typedef std::list<Bike> HNode; 
+
+extern String UBIKE_REPORT_FREEBIKES_FIELDS[];
+extern String UBIKE_REPORT_TOTAL_FIELDS[];
 
 class Bikebase{
 public:
@@ -21,42 +33,44 @@ public:
 		find bikeptr in the hashtable by the unique license number
 		and return the bikeptr
 
-		Return:
-		when success, BikePtr
-		when failed, null
+		@throw LicenseNotFoundException: when license not found in the table
+		@throw BikeonRented: when this bike is on rented
 	*/
-	BikePtr get(LicencseType license);
+	BikePtr get(LicenseType license);
 	
 	/*
 		remove(license):
 		remove the bikeptr from hashtable. Note, Bikebase will not handle the memory management
 
-		Return:
-		when success, true
-		when failed, false
+		@throw NullpointerException: when passing null pointer
 	*/
-	bool remove(LicencseType license);
+	void remove(BikePtr bikeptr);
 
 	/*
-		insert(bikeptr):
-		insert a bikeptr into the hashtable
+		add(LicenseType license, Mileage mile, BikeType bikeType, StationType station):
+		create a new bike in the bikebase 
 	*/
-	void insert(BikePtr bikeptr);
+	BikePtr add(LicenseType license, Mileage mile, BikeType bikeType, StationType station);
 	
-	/*
-		report():
-		print the hash_table status
-	*/
-	String report();
+	std::vector<HNode>& getHashtable();
+	
+	BikePtr operator [](const LicenseType license);
 private:
-	HNode *hash_table;
+
+	/* Hastable instance */
+	std::vector<HNode> hash_table;
+	
+	/* Number of bikes */
 	unsigned int bike_num;
+	
+	/* HashTable size */
+	size_t table_size;
 
 	/*
 		toHash(license):
 		hash function
 	*/
-	Hashcode toHash(LicencseType license);
+	Hashcode toHash(LicenseType license);
 };
 
 #endif
