@@ -145,6 +145,12 @@ struct LicenseNotFoundException: std::exception {
 	}
 };
 
+struct EmptyContainerException: std::exception{
+	const char* what() const noexcept {
+		return "Empty Container";
+	}
+};
+
 struct BikeonRented: std::exception {
 	const LicenseType license;
 	

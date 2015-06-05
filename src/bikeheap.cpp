@@ -1,68 +1,107 @@
 #include "bikeheap.h"
 
-BikeHeap::BikeHeap(){
-    
+BikeHeap::BikeHeap():
+heapsize(0){
+    // No use node
+    heap.push_back(new Bike(LicenseType("")));
 }
 
 BikeHeap::~BikeHeap(){
-    
+
 }
 
 int BikeHeap::size(){
-    return heap.size();
+    return heapsize;
 }
 
 bool BikeHeap::empty(){
-    return heap.size() == 0;
+    return heapsize == 0;
 }
 
 BikePtr BikeHeap::top(){
-    return heap.front();
+    if(empty())
+        throw EmptyContainerException();
+    else if(heap[1] == NULL)
+        throw NullpointerException();
+    return heap[1];
 }
 
-BikePtr BikeHeap::pop(){
-    std::pop_heap(heap.begin(), heap.end(), bikePtrCmp);
-    heap.pop_back();
-    
+void BikeHeap::pop(){
+    if (heapsize == 0)
+        return;
+    bubble_down(1, heap[heapsize--]);
 }
 
 void BikeHeap::insert(BikePtr ptr){
     if(ptr == NULL)
         throw NullpointerException();
-    heap.push_back(ptr); 
-    std::push_heap(heap.begin(), heap.end(), bikePtrCmp);
+    std::cout << "Insert : " << ptr->license << std::endl;
+    bubble_up(++heapsize, ptr);
+    std::cout << "size: " << heap.size() << std::endl;
 }
 
 void BikeHeap::deletes(BikePtr bikeptr){
     if(bikeptr == NULL)
         throw NullpointerException();
+    
+    for(std::vector<BikePtr>::iterator it = heap.begin(); it != heap.end(); it++){
+        if(*it == NULL) continue;
+        std::cout << "size: " << heap.size() << std::endl;
+        std::cout << "Comapre: " << (*it)->license << " with " << bikeptr->license << std::endl;
+        if(*it != NULL && *it == bikeptr){
+            std::cout << "Found" << std::endl;
+            int ti = it - heap.begin();
+
+            // Replace the element with
+            heap[ti] = heap[heapsize--];
         
-    std::vector<BikePtr>::iterator it = std::find(heap.begin(), heap.end(), bikeptr);
-    if(it == heap.end())
-        throw LicenseNotFoundException(bikeptr->license);
+            // Larger than parent
+            (bikePtrCmp(heap[ti / 2], heap[ti])) ? bubble_up(ti, heap[ti]) : bubble_down(ti, heap[ti]);
+            return;
+        }
+    }
     
-    // Replace the delete node with last node
-    *it = heap.back();
-    
-    // Pop out the last node
-    heap.pop_back();
-    std::make_heap(heap.begin(), heap.end(), bikePtrCmp);
+    throw LicenseNotFoundException(bikeptr->license);
+}
+
+void BikeHeap::bubble_up(int currentnode, BikePtr e){
+    BikePtr parent_e;
+    while (currentnode != 1 && currentnode != 0) {
+        if(bikePtrCmp((parent_e = heap[currentnode / 2]), e)){
+            heap[currentnode] = parent_e;
+            currentnode /= 2;
+        }
+        else
+            break;
+    }
+    heap[currentnode] = e;
+}
+
+void BikeHeap::bubble_down(int currentnode, BikePtr e){
+    int child = currentnode * 2;
+    while (child <= heapsize) {
+        if (child < heapsize && bikePtrCmp(heap[child], heap[child + 1]))
+            child++;
+                
+        if (!(bikePtrCmp(e, heap[child])))
+            break;
+                
+        heap[currentnode] = heap[child];
+        currentnode = child;
+        child *= 2;
+    }
+    heap[currentnode] = e; 
 }
 
 BikeHeap::Iterator BikeHeap::begin(){
-    return BikeHeap::Iterator(heap.begin());
+    return BikeHeap::Iterator(heap.begin() + 1);
 }
 
 BikeHeap::Iterator BikeHeap::end(){
-    return BikeHeap::Iterator(heap.end());
+    return BikeHeap::Iterator(heap.begin() + 1 + heapsize);
 }
 
-void BikeHeap::update(){
-    // Re-assign the cursor to each bike
-    for(BikeHeapCursor it = heap.begin(); it != heap.end(); it++)
-        (*it)->setCursor(it);
-}
-
+//bikePtrCmp()
 bool bikePtrCmp(const BikePtr a, const BikePtr b){
 	if(a != NULL && b != NULL)
 		return a->getMile() < b->getMile();

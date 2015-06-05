@@ -35,7 +35,7 @@ public:
 		pop():
 		dicard the first element in the heap
 	*/
-	BikePtr pop();
+	void pop();
 	
 	/*
 		insert(ptr):
@@ -49,13 +49,6 @@ public:
 		delete a Bike of the vector and update all bikes' cursor
 	*/
 	void deletes(BikePtr bikeptr);
-	
-	/*
-		update():
-		heaplify the vectory again
-		and refresh all bikes' cursor in the heap
-	*/
-	void update();
 	
 	Iterator begin();
 	Iterator end();
@@ -96,6 +89,10 @@ public:
 	};
 private:
 	std::vector<BikePtr> heap;
+	int heapsize;
+	
+	void bubble_up(int currentnode, BikePtr e);
+	void bubble_down(int currentnode, BikePtr e);
 };
 
 #endif

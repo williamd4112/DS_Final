@@ -26,10 +26,14 @@ void Station::rent(BikeType type){
 	BikePtr freeBikePtr = bikeheaps[type].top();
 	bikeheaps[type].pop();
 	
+	if(freeBikePtr == NULL)
+		throw NullpointerException();
+	
 	// Rent the bike
 	freeBikePtr->rent();
 	
 	// Insert into rentheap
+	std::cout << stationtypeToStr(stationType) << " rent " << freeBikePtr->license << std::endl;
 	rentheap.insert(freeBikePtr);
 }
 
@@ -44,7 +48,7 @@ void Station::remove(BikePtr bikeptr){
 void Station::returns(BikePtr bikeptr, Mileage returnMile){
 	if(bikeptr == NULL)
 		throw NullpointerException();
-	
+	std::cout << stationtypeToStr(stationType) << " get returns" << std::endl;
 	// Delete from rent heap
 	rentheap.deletes(bikeptr);
 	

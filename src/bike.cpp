@@ -38,7 +38,7 @@ void Bike::returns(Mileage returnMile){
     status = FREE;
     
     // Update accumulated miles
-    mile = returnMile;
+    mile += returnMile;
 }
 
 void Bike::setCursor(BikeHeapCursor _cursor){

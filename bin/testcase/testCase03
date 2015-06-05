@@ -14,31 +14,29 @@ NewBike Electric BBBB1 33 Danshui
 NewBike Electric CCCC0 33 Danshui
 NewBike Electric CCCC1 33 Ximen
 NewBike Electric AC000 33 Ximen
-StationReport Ximen
 HashReport
 JunkIt 00006
 JunkIt 00007
 JunkIt NTHU1
 JunkIt AAAA2
-StationReport Jingmei
 Rent Jingmei Lady
-StationReport Jingmei
 Rent Jingmei Lady
-StationReport Jingmei
 Rent Danshui Lady
+StationReport Jingmei
 Returns Jingmei NTHU4 40
 Returns Ximen NTHU3 2
-StationReport Ximen
 Trans Ximen CCCC0
 StationReport Ximen
+StationReport Danshui
 Trans Ximen BBBB1
-StationReport Ximen
 Rent Ximen Electric
-StationReport Ximen
 Rent Ximen Electric
-StationReport Ximen
 Returns Muzha CCCC1 40
+StationReport Danshui
+StationReport Jingmei
+StationReport Xinpu
 StationReport Ximen
+StationReport Liuzhangli
 NetSearch Jingmei
 NetSearch Ximen
 HashReport

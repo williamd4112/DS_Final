@@ -12,13 +12,14 @@ Bikebase::~Bikebase(){
 
 BikePtr Bikebase::get(LicenseType license){
     HNode& hnode = hash_table[toHash(license)];
-    HNode::iterator it = std::find(hnode.begin(), hnode.end(), Bike(license));
+    for(HNode::iterator it = hnode.begin(); it != hnode.end(); it++){
+        if(it->license == license){
+            Bike& ref = *it;
+            return &ref;
+        }
+    }
     
-    Bike& ref = *it;
-    if(it == hnode.end())
-         throw LicenseNotFoundException(license);
-    
-    return &ref;
+    throw LicenseNotFoundException(license);
 }
 
 void Bikebase::remove(BikePtr bikeptr){

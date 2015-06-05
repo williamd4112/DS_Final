@@ -367,7 +367,7 @@ void load_instruction(const char *filename){
     		std::vector<String> args = tokenize(line);
     		if(args.size() < 1)
     			throw std::invalid_argument("Number of arguments is too less");
-    		
+    		std::cout << line << std::endl;
     		for(int i = 0; INSTR_FUNC_TABLE[i].func != NULL; i++)
     			if(INSTR_FUNC_TABLE[i].op == args[0])
     				INSTR_FUNC_TABLE[i].func(args);
