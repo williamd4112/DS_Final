@@ -65,7 +65,7 @@ void BikeHeap::update(){
 
 bool bikePtrCmp(const BikePtr a, const BikePtr b){
 	if(a != NULL && b != NULL)
-		return a->getMile() <= b->getMile();
+		return a->getMile() < b->getMile();
 	else
 		throw NullpointerException();
 }
