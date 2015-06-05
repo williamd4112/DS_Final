@@ -28,18 +28,18 @@ enum StatusType {
 };
 
 enum StationType{
-	Danshui,
-	Hongshulin, 
-	Beitou,
-	Shilin, 
-	Zhongshan, 
-	Xinpu,
-	Ximen, 
-	Liuzhangli, 
-	Muzha,
-	Guting, 
-	Gongguan, 
-	Jingmei
+	Danshui = 0,
+	Hongshulin = 1, 
+	Beitou = 2,
+	Shilin = 3, 
+	Zhongshan = 4, 
+	Xinpu = 5,
+	Ximen = 6, 
+	Liuzhangli = 7, 
+	Muzha = 8,
+	Guting = 9, 
+	Gongguan = 10, 
+	Jingmei = 11
 };
 
 enum BikeType{
@@ -84,7 +84,7 @@ typedef struct LicenseType {
 	}
 	
 	friend std::ostream& operator <<(std::ostream& os, const LicenseType license){
-		os << license.license_number;
+		return os << license.license_number;
 	}
 }LicenseType;
 
@@ -142,12 +142,6 @@ struct LicenseNotFoundException: std::exception {
 	
 	const char* what() const noexcept {
 		return license.license_number;
-	}
-};
-
-struct EmptyContainerException: std::exception{
-	const char* what() const noexcept {
-		return "Empty Container";
 	}
 };
 
@@ -228,6 +222,7 @@ extern String station_table[];
 extern String biketype_table[];
 
 extern String SEP;
+extern String QUATER_SEP;
 extern BikeType BIKE_TYPES[];
 extern StationType STATION_TYPES[];
 extern String UBIKE_REPORT_FREEBIKES_FIELDS[];

@@ -1,0 +1,26 @@
+New bike is received by Station Xinpu.
+New bike is received by Station Jingmei.
+New bike is received by Station Jingmei.
+New bike is received by Station Jingmei.
+New bike is received by Station Jingmei.
+New bike is received by Station Danshui.
+New bike is received by Station Danshui.
+New bike is received by Station Danshui.
+New bike is received by Station Liuzhangli.
+New bike is received by Station Liuzhangli.
+New bike is received by Station Liuzhangli.
+New bike is received by Station Danshui.
+New bike is received by Station Danshui.
+New bike is received by Station Danshui.
+New bike is received by Station Danshui.
+New bike is received by Station Danshui.
+New bike is received by Station Danshui.
+New bike is received by Station Danshui.
+New bike is received by Station Danshui.
+New bike is received by Station Ximen.
+New bike is received by Station Ximen.
+Bike 00006 does not belong to our company.
+Bike BBBB1 is deleted from Danshui.
+Bike BBBB1 is deleted from Danshui.
+Bike BBBB2 is deleted from Danshui.
+Bike BBBB3 is deleted from Danshui.

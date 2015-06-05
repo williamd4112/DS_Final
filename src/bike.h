@@ -58,9 +58,9 @@ public:
 	BikeType getBikeType() const;
 	StationType getStationType() const;
 	StatusType getStatus() const;
+	String getLog(int width);
 	
 	bool operator ==(const Bike b);
-	friend std::ostream& operator <<(std::ostream& os, const Bike& b);
 private:
 
 	/* License Number */

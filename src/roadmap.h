@@ -7,17 +7,11 @@
 
 namespace Roadmap{
     
-    int convert(String s_name);
     void init(const char *file);
     void buildMap();
+    bool isShortestPath(StationType src, StationType dst, int dis);
     
-    extern String name[];
-    extern String line; 
-    extern String start;
-    extern String destination;
-    
-    extern Distance dis;
-    extern Distance station_map[12][12];
+    extern Distance station_map[NUM_STATION][NUM_STATION];
 }
 
 #endif

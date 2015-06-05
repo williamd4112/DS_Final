@@ -1,6 +1,7 @@
 #include "standard.h"
 
 String SEP = "============================================================";
+String QUATER_SEP = "===============";
 
 DiscountRecord discount_table[] = {
 	{Electric, 30, 40},

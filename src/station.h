@@ -48,6 +48,18 @@ public:
 		Net, Electric, Lady, Road, Hybrid
 	*/
 	std::vector<int> getMetrics();
+
+	/*
+		getFreeBikesLog():
+		get all free bikes log by string
+	*/
+	std::list<BikePtr> getFreeBikesPtr();
+
+	/*
+		getRentBikesLog():
+		get all rent bikes log by string
+	*/
+	std::list<BikePtr> getRentBikesPtr();
 	
 	/*
 		print the status of the station

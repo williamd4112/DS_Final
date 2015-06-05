@@ -38,7 +38,7 @@ void Bike::returns(Mileage returnMile){
     status = FREE;
     
     // Update accumulated miles
-    mile += returnMile;
+    mile = returnMile;
 }
 
 void Bike::setCursor(BikeHeapCursor _cursor){
@@ -65,19 +65,15 @@ StatusType Bike::getStatus() const{
     return status;
 }
 
-bool Bike::operator ==(const Bike b){
-    return license == b.license;
+String Bike::getLog(int width){
+    std::stringstream ss;
+    ss << std::setw(width) << getLicense();
+    ss << std::setw(width) << getMile();
+    ss << std::setw(width) << biketypeToStr(getBikeType());
+    ss << std::setw(width) << stationtypeToStr(getStationType());
+    return ss.str();
 }
 
-std::ostream& operator <<(std::ostream& os, const Bike& b){
-    os << std::setw(15) << "License" << std::setw(15) << "Mileage" << std::setw(15) << "Class" << std::setw(15) << "Station" << std::endl;
-    for(int i = 0; i < 60; i++)
-        os << "=";
-    os << std::endl;
-    os << std::setw(15) << b.getLicense();
-    os << std::setw(15) << b.getMile();
-    os << std::setw(15) << biketypeToStr(b.getBikeType());
-    os << std::setw(15) << stationtypeToStr(b.getStationType());
-    
-    return os;
+bool Bike::operator ==(const Bike b){
+    return license == b.license;
 }

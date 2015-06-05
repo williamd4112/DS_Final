@@ -1,45 +1,44 @@
 #include "roadmap.h"
 
-String Roadmap::name[] {
-    "Danshui", 
-    "Hongshulin", 
-    "Beitou", 
-    "Shilin", 
-    "Zhongshan", 
-    "Xinpu",
-    "Ximen", 
-    "Liuzhangli", 
-    "Muzha", 
-    "Guting", 
-    "Gongguan", 
-    "Jingmei"
-};
+const int INF = 0x7fffffff;
 
-String Roadmap::line; 
-String Roadmap::start; 
-String Roadmap::destination;
-Distance Roadmap::dis;
-Distance Roadmap::station_map[12][12];
-
-int Roadmap::convert(String s_name) {
-    for(int i = 0; i < 12 ; i++) {
-        if(s_name == name[i]) return i;
-    }
-}
+Distance Roadmap::station_map[NUM_STATION][NUM_STATION];
 
 void Roadmap::init(const char *file) {
-    ifstream fin(file, ios::in);
-    while(getline(fin, line) != NULL){
-        stringstream ss(line);
-        ss >> start >> destination >> dis;
-        int s = convert(start), d = convert(destination);
-        station_map[s][d] = station_map[d][s] = distance;
+    for(int i = 0; i < NUM_STATION; i++){
+        for(int j = 0; j < NUM_STATION; j++)
+            station_map[i][j] = INF;
+        station_map[i][i] = 0;
     }
+
+    String line;
+    String start;
+    String destination;
+    Distance dis;
+
+    std::ifstream fin(file, std::ios::in);
+
+    while (std::getline(fin, line) != NULL) {
+        std::stringstream ss(line);
+        ss >> start >> destination >> dis;
+
+        StationType s = toStationType(start);
+        StationType d = toStationType(destination);
+
+        station_map[s][d] = station_map[d][s] = dis;
+    }
+
     fin.close();
 }
+
 void Roadmap::buildMap() {
-    for(int k = 0; k < 12 ; k++)
-        for(int i = 0; i < 12 ; i++)
-            for(int j = 0; j <12 ; j++)
-                 station_map[i][j] = min(station_map[i][j], station_map[i][k] + station_map[k][j]);
+    for (int k = 0; k < NUM_STATION; k++)
+        for (int i = 0; i < NUM_STATION; i++)
+            for (int j = 0; j < NUM_STATION; j++)
+                if(station_map[i][k] != INF && station_map[k][j] != INF)
+                    station_map[i][j] = std::min(station_map[i][j], station_map[i][k] + station_map[k][j]);
+}
+
+bool Roadmap::isShortestPath(StationType src, StationType dst, int dis){
+    return (dis <= station_map[src][dst]);
 }

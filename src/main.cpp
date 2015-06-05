@@ -16,6 +16,7 @@
 #include "bike.h"
 #include "bikebase.h"
 #include "station.h"
+#include "roadmap.h"
 
 typedef void (*instr_func)(std::vector<String>& args);
 typedef struct instr_func_record {
@@ -60,8 +61,6 @@ void i_netSearch(std::vector<String>& args);
 
 // Format: HashReport
 void i_hashReport(std::vector<String>& args);
-
-// BikePtr searchBike(LicenseType license);
 
 // Format: Junk [LicenseType]
 void junkBikePtr(LicenseType license);
@@ -117,7 +116,7 @@ void i_newBike(std::vector<String>& args){
 	
 	// Parsing arguments
 	if(args.size() < 5)
-		throw std::invalid_argument("Number of arguments is too less");
+		throw std::invalid_argument("Number of arguments is too few");
 		
 	BikeType bikeType = toBikeType(args[1]);
 	LicenseType license(args[2].c_str());
@@ -137,15 +136,15 @@ void i_newBike(std::vector<String>& args){
 void i_inquire(std::vector<String>& args){
 	// Parsing arguments
 	if(args.size() < 2)
-		throw std::invalid_argument("Number of arguments is too less");
-	
+		throw std::invalid_argument("inquire(): Number of arguments is too few");
+
 	try{
 		LicenseType inquire_license(args[1].c_str());
 	
 		// Lookup from bikebase
 		BikePtr bikeptr = bikebase[inquire_license];
 		
-		std::cout << *bikeptr << std::endl << std::endl;
+		std::cout << bikeptr->getLog(15) << std::endl << std::endl;
 	}
 	catch(LicenseNotFoundException e){
 		msg_licensenotfound(e.license);
@@ -160,7 +159,7 @@ void i_inquire(std::vector<String>& args){
 
 void i_transBikePtr(std::vector<String>& args){
 	if(args.size() < 3)
-		throw std::invalid_argument("Number of arguments is too less");
+		throw std::invalid_argument("Number of arguments is too few");
 	
 	try{
 		StationType new_station = toStationType(args[1]);
@@ -222,15 +221,15 @@ void i_junkBikePtr(std::vector<String>& args){
 	try{
 		LicenseType junk_license = LicenseType(args[1].c_str());
 		
-		// Get the bikeptr from bikebase
+		// Get the bikeptr from bikebase (bikebase's get function will gurantee non-null pointer return)
 		BikePtr junk_ptr = bikebase[junk_license];
-		
+
 		// Record the station before delete
 		StationType station = junk_ptr->getStationType();
 		
 		// Remove from station
 		stations[station].remove(junk_ptr);
-		
+
 		// Remove from bikebase (NOTE: this operation will free this bike's memory)
 		bikebase.remove(junk_ptr);
 		
@@ -266,12 +265,15 @@ void i_returns(std::vector<String>& args){
 		
 	// Lookup the charge
 	for(int i = 0; i < NUM_TYPE_OF_BIKE; i++){
-		if(discount_table[i].biketype == bikeType){
-			// Check shortest path
-			// *** pass
-			
+		if(discount_table[i].biketype == bikeType){			
 			// Charge the station
-			Cost rental_charge = discount_table[i].original * (returnMile - ori_mile);
+			Distance dis_diff = (returnMile - ori_mile);
+			Cost rental_charge;
+			if(Roadmap::isShortestPath(ori_station, return_station, dis_diff))
+				rental_charge = dis_diff * discount_table[i].discount;
+			else
+				rental_charge = dis_diff * discount_table[i].original;
+
 			stations[ori_station].charge(bikeType, rental_charge);
 			std::cout << "Rental charge for this bike is " << rental_charge << "." << std::endl;
 			break;
@@ -296,50 +298,39 @@ void i_netSearch(std::vector<String>& args){
 }
 
 void i_hashReport(std::vector<String>& args){
-	std::cout << "Hash Table" << std::endl;
-    for(int i = 0; i < bikebase.getHashtable().size(); i++){
-        if(bikebase.getHashtable()[i].size() < 1) 
-            continue;
-            
-        bool first = true;
-        HNode& hnode = bikebase.getHashtable()[i];
-        for(HNode::iterator it = hnode.begin(); it != hnode.end(); it++)
-            if(!first)
-                std::cout  << "->" << it->getLicense();
-            else{
-                first = false;
-                std::cout  << i << " " << it->getLicense();
-            }
-        std::cout  << std::endl;
-    }
+	bikebase.report();
 }
 
 void i_ubikeReport(std::vector<String>& args){
-	std::list<Bike> free_bikes;
-    std::list<Bike> rented_bikes;
-    for(int i = 0; i < bikebase.getHashtable().size(); i++)
-        for(HNode::iterator it = bikebase.getHashtable()[i].begin(); it != bikebase.getHashtable()[i].end(); it++)
-            (it->getStatus() == FREE) ? free_bikes.push_back(*it) : rented_bikes.push_back(*it);
-    
-    std::cout << std::setw(30) << "Taipei U-bike" << std::endl;
+	std::list<BikePtr> station_free_logs;
+	for(int i = 0; i < NUM_STATION; i++){
+		std::list<BikePtr> log = stations[i].getFreeBikesPtr();
+		station_free_logs.insert(station_free_logs.end(), log.begin(), log.end());
+	}
 
+	std::list<BikePtr> station_rent_logs;
+	for(int i = 0; i < NUM_STATION; i++){
+		std::list<BikePtr> log = stations[i].getRentBikesPtr();
+		station_rent_logs.insert(station_rent_logs.end(), log.begin(), log.end());
+	}
+
+   	std::cout << std::setw(30) << "Taipei U-bike" << std::endl;
 	std::cout << std::setw(30) << "Free Bikes" << std::endl;
-    PRINT_FIELD(UBIKE_REPORT_FREEBIKES_FIELDS, 5)
-    PRINT_SEP
-	PRINT_BIKES(free_bikes)
-    PRINT_SEP
-    std::cout << std::setw(60) << free_bikes.size() << std::endl << std::endl;
+	print_fields(std::vector<String>(UBIKE_REPORT_FREEBIKES_FIELDS, UBIKE_REPORT_FREEBIKES_FIELDS + 5), 12);
+	std::cout << SEP << std::endl;
+	for(std::list<BikePtr>::iterator it = station_free_logs.begin(); it != station_free_logs.end(); it++)
+		std::cout << (*it)->getLog(12) << std::endl;
+	std::cout << SEP << std::endl;
+	std::cout << std::setw(60) << station_free_logs.size() << std::endl << std::endl;
     
     std::cout << std::setw(30) << "Rented Bikes" << std::endl;
-    PRINT_FIELD(UBIKE_REPORT_FREEBIKES_FIELDS, 5)
-    PRINT_SEP
-	PRINT_BIKES(rented_bikes)
-    PRINT_SEP
-    std::cout << std::setw(60) << rented_bikes.size() << std::endl << std::endl;   
-    
-    PRINT_FIELD(UBIKE_REPORT_TOTAL_FIELDS, 5)
-	PRINT_SEP
-	
+    print_fields(std::vector<String>(UBIKE_REPORT_FREEBIKES_FIELDS, UBIKE_REPORT_FREEBIKES_FIELDS + 5), 12);
+    std::cout << SEP << std::endl;
+    for(std::list<BikePtr>::iterator it = station_rent_logs.begin(); it != station_rent_logs.end(); it++)
+		std::cout << std::setw(12) << (*it)->getLog(12) << std::endl;
+	std::cout << SEP << std::endl;
+	std::cout << std::setw(60) << station_rent_logs.size() << std::endl << std::endl;
+
 	std::vector<int> metrics(5, 0);
 	for(int i = 0; i < NUM_STATION; i++){
 		std::vector<int> s = stations[i].getMetrics();
@@ -347,11 +338,12 @@ void i_ubikeReport(std::vector<String>& args){
 			metrics[i] += s[i];
 	}
 	
+	print_fields(std::vector<String>(UBIKE_REPORT_TOTAL_FIELDS, UBIKE_REPORT_TOTAL_FIELDS + 5), 12);
+	std::cout << SEP << std::endl;
 	for(int i = 0; i < 5; i++)
 		std::cout << std::setw(12) << metrics[i];
 	std::cout << std::endl;
-	PRINT_SEP
-	std::cout << std::endl;
+	std::cout << SEP << std::endl << std::endl;
 }
 
 void load_instruction(const char *filename){
@@ -366,15 +358,15 @@ void load_instruction(const char *filename){
     		getline(ifs, line);
     		std::vector<String> args = tokenize(line);
     		if(args.size() < 1)
-    			throw std::invalid_argument("Number of arguments is too less");
-    		std::cout << line << std::endl;
+    			throw std::invalid_argument("Number of arguments is too few");
+    		
     		for(int i = 0; INSTR_FUNC_TABLE[i].func != NULL; i++)
     			if(INSTR_FUNC_TABLE[i].op == args[0])
     				INSTR_FUNC_TABLE[i].func(args);
     	}
   	}
   	catch (std::ifstream::failure e) {
-    	std::cerr << "load_instruction(): load file error" << std::endl;
+    	//std::cerr << "load_instruction(): load file error" << std::endl;
     	return;
   	}
   	catch (std::invalid_argument e) {
@@ -393,13 +385,30 @@ void load_instruction(const char *filename){
   	ifs.close();
 }
 
+void showMap(){
+	std::cout << std::setw(3) << " ";
+	for(int i = 0; i < NUM_STATION; i++)
+		std::cout << std::setw(3) << i;
+	std::cout << std::endl;
+	for(int i = 0; i < NUM_STATION; i++){
+		std::cout << std::setw(3) << i;
+		for(int j = 0; j < NUM_STATION; j++)
+			std::cout << std::setw(3) << Roadmap::station_map[i][j];
+		std::cout << std::endl;
+	}
+}
+
 int main(int argc, char *argv[]){
-	if(argc < 2){
-		std::cout << "Usage: ./main.out [Instruction File] [Map file]" << std::endl;
+	if(argc < 4){
+		std::cout << "Usage: ./main.out [Instruction File] [Output File] [Map File]" << std::endl;
 		return 0;
 	}
 	
+	freopen(argv[3], "w", stdout);
+
 	init();
+	Roadmap::init(argv[2]);
+	Roadmap::buildMap();
 	load_instruction(argv[1]);
 
 	return 0;
