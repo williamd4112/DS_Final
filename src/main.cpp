@@ -143,7 +143,8 @@ void i_inquire(std::vector<String>& args){
 	
 		// Lookup from bikebase
 		BikePtr bikeptr = bikebase[inquire_license];
-		
+		print_fields(std::vector<String>(UBIKE_REPORT_FREEBIKES_FIELDS, UBIKE_REPORT_FREEBIKES_FIELDS + 4), 15);
+		std::cout << SEP << std::endl;
 		std::cout << bikeptr->getLog(15) << std::endl << std::endl;
 	}
 	catch(LicenseNotFoundException e){
@@ -400,7 +401,7 @@ void showMap(){
 
 int main(int argc, char *argv[]){
 	if(argc < 4){
-		std::cout << "Usage: ./main.out [Instruction File] [Output File] [Map File]" << std::endl;
+		std::cout << "Usage: ./main.out [Instruction File] [Map File] [Output File] " << std::endl;
 		return 0;
 	}
 	

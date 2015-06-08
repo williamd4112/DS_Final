@@ -100,7 +100,6 @@ String STATION_REPORT_FIELDS[] = {
     "SubTotal"
 };
 
-
 BikeType toBikeType(String bikeType_s){
 	for(int i = 0; i < NUM_TYPE_OF_BIKE; i++)
 		if(biketypeRecord_table[i].bikeType_s == bikeType_s)
